@@ -32,15 +32,18 @@ jobs:
         run: |
           echo "iniciando login"
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
-          echo "Version $NEW_VERSION"
           echo "finalizando login"
 
-      # - name: Build docker image
-      #   run: |
-      #     docker build -t flutox/docker-graphql:0.0.2 .
-      #     docker build -t flutox/docker-graphql:latest .
+      - name: Build docker image
+        env:
+           NEW_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          docker build -t flutox/docker-graphql:$NEW_VERSION .
+          docker build -t flutox/docker-graphql:latest .
 
-      # - name: Push docker image
-      #   run: |
-      #     docker push flutox/docker-graphql:0.0.2
-      #     docker push flutox/docker-graphql:latest
+      - name: Push docker image
+        env:
+           NEW_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          docker push flutox/docker-graphql:$NEW_VERSION
+          docker push flutox/docker-graphql:latest
